@@ -1,26 +1,26 @@
-import { type RegisteredComponent } from "@builder.io/sdk-react";
-import dynamic from "next/dynamic";
+import { RegisteredComponent } from "@builder.io/react";
+import React from "react";
 
-// Dynamic imports for Builder.io components
-const ChatContainer = dynamic(() =>
+// React components for Builder.io (no dynamic imports needed for React Router)
+const ChatContainer = React.lazy(() =>
   import("./src/components/chat/ChatContainer").then((mod) => ({
     default: mod.ChatContainer,
   })),
 );
 
-const PromptSuggestions = dynamic(() =>
+const PromptSuggestions = React.lazy(() =>
   import("./src/components/chat/PromptSuggestions").then((mod) => ({
     default: mod.PromptSuggestions,
   })),
 );
 
-const MessageBubble = dynamic(() =>
+const MessageBubble = React.lazy(() =>
   import("./src/components/chat/MessageBubble").then((mod) => ({
     default: mod.MessageBubble,
   })),
 );
 
-const Header = dynamic(() =>
+const Header = React.lazy(() =>
   import("./src/components/layout/Header").then((mod) => ({
     default: mod.Header,
   })),
