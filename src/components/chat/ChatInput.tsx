@@ -215,23 +215,6 @@ export function ChatInput({
         </div>
       )}
 
-      {/* Mode indicator */}
-      {isImageGenMode && (
-        <div className="mb-3 flex items-center space-x-2 text-sm text-ai-primary">
-          <Sparkles className="w-4 h-4" />
-          <span className="font-medium">Image Generation Mode</span>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleImageGenMode}
-            className="h-6 px-2 text-xs"
-          >
-            <X className="w-3 h-3 mr-1" />
-            Exit
-          </Button>
-        </div>
-      )}
-
       {/* Main input container */}
       <form onSubmit={handleSubmit} className="relative">
         <div className="relative glass rounded-2xl border border-border/50 shadow-lg overflow-hidden transition-all duration-200 hover:shadow-xl focus-within:ring-2 focus-within:ring-ai-primary/20">
