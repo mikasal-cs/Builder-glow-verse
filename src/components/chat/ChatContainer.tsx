@@ -13,7 +13,6 @@ interface ChatContainerProps {
   voiceSettings: VoiceSettings;
   onSendMessage: (content: string, type?: "text" | "image") => void;
   onUploadImage: (file: File) => void;
-  onGenerateImage: (prompt: string) => void;
   onVoiceToggle: (isRecording: boolean) => void;
   onSpeakMessage: (text: string) => void;
   className?: string;
