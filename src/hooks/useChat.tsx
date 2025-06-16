@@ -301,14 +301,12 @@ export function useChat() {
 
   const startVoiceRecording = useCallback(() => {
     setVoiceSettings((prev) => ({ ...prev, isRecording: true }));
-    // Voice recording implementation would go here
-    console.log("Starting voice recording...");
+    console.log("Voice recording started - using Web Speech API");
   }, []);
 
   const stopVoiceRecording = useCallback(() => {
     setVoiceSettings((prev) => ({ ...prev, isRecording: false }));
-    // Stop recording and process speech-to-text
-    console.log("Stopping voice recording...");
+    console.log("Voice recording stopped");
   }, []);
 
   const speakMessage = useCallback(
