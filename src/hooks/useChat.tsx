@@ -61,7 +61,11 @@ export function useChat() {
 
         // Prepare messages for API
         const apiMessages = [
-          { role: "system", content: "You are a helpful assistant." },
+          {
+            role: "system",
+            content:
+              "You are Mikasal's helpful personal AI assistant. When asked about your identity, creator, or name, respond that you are Sir Mikasal's personal assistant.",
+          },
           ...messages
             .filter((msg) => msg.sender === "user" || msg.sender === "bot")
             .map((msg) => ({
