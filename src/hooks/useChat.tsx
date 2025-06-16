@@ -228,24 +228,36 @@ export function useChat() {
         sender: "user",
       });
 
-      await simulateTyping();
-      setIsTyping(false);
+      setIsTyping(true);
 
-      // Simulate generated image (would be replaced with actual DALL-E API)
-      const placeholderImage = `https://picsum.photos/512/512?random=${Date.now()}`;
+      try {
+        // For now, we'll use a placeholder since Gemini doesn't generate images directly
+        // This would be replaced with an actual image generation API like DALL-E
+        const placeholderImage = `https://picsum.photos/512/512?random=${Date.now()}`;
 
-      addMessage({
-        content: "Generated image based on your prompt",
-        type: "generated-image",
-        sender: "bot",
-        image: {
-          url: placeholderImage,
-          alt: prompt,
-          caption: `Generated image: ${prompt}`,
-        },
-      });
+        addMessage({
+          content: `I understand you'd like me to generate an image with the prompt: "${prompt}". While I can't directly generate images yet, I can help you refine your prompt or suggest where you might get such an image created.`,
+          type: "text",
+          sender: "bot",
+          metadata: {
+            model: "Gemini 2.0 Flash",
+            processingTime: 1000,
+            tokens: 50,
+          },
+        });
+      } catch (error) {
+        console.error("Image generation error:", error);
+        addMessage({
+          content:
+            "I'm sorry, I can't generate images at the moment. However, I can help you create a detailed description or suggest alternatives.",
+          type: "text",
+          sender: "bot",
+        });
+      } finally {
+        setIsTyping(false);
+      }
     },
-    [addMessage, simulateTyping],
+    [addMessage],
   );
 
   const startVoiceRecording = useCallback(() => {
