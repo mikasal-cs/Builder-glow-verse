@@ -298,28 +298,10 @@ export function ChatInput({
               <ImageIcon className="w-4 h-4 mr-2" />
               Upload Image
             </Button>
-
-            {/* Image generation toggle */}
-            <Button
-              type="button"
-              variant={isImageGenMode ? "default" : "ghost"}
-              size="sm"
-              onClick={toggleImageGenMode}
-              className={cn(
-                isImageGenMode
-                  ? "bg-ai-primary text-white hover:bg-ai-primary/90"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              <Palette className="w-4 h-4 mr-2" />
-              Generate Image
-            </Button>
           </div>
 
-          {/* Character count and shortcuts */}
+          {/* Shortcuts info */}
           <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-            <span>{message.length} / 4000</span>
-            <span>•</span>
             <span className="hidden sm:inline">
               Enter to send, Shift+Enter for new line
             </span>
