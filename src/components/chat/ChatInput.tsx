@@ -153,16 +153,24 @@ export function ChatInput({
     });
   }, []);
 
-  const toggleImageGenMode = useCallback(() => {
-    setIsImageGenMode((prev) => !prev);
-    if (textareaRef.current) {
-      textareaRef.current.focus();
+  const handleVoiceInput = useCallback(() => {
+    if (!recognitionRef.current) {
+      toast({
+        title: "Voice Input Not Supported",
+        description: "Your browser doesn't support voice input.",
+        variant: "destructive",
+      });
+      return;
     }
-  }, []);
 
-  const handleVoiceToggle = useCallback(() => {
-    onVoiceToggle(!isRecording);
-  }, [isRecording, onVoiceToggle]);
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      setIsListening(true);
+      recognitionRef.current.start();
+    }
+  }, [isListening]);
 
   const isMessageValid = message.trim().length > 0;
   const canSend = isMessageValid && !disabled;
