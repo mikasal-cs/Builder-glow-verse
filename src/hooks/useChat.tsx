@@ -312,17 +312,48 @@ export function useChat() {
   const speakMessage = useCallback(
     (text: string) => {
       if ("speechSynthesis" in window) {
+        // Stop any current speech
+        speechSynthesis.cancel();
+
         setVoiceSettings((prev) => ({ ...prev, isSpeaking: true }));
 
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.rate = voiceSettings.speechRate;
         utterance.pitch = voiceSettings.speechPitch;
+        utterance.volume = 1;
+
+        // Try to get a more natural voice
+        const voices = speechSynthesis.getVoices();
+        const preferredVoice =
+          voices.find(
+            (voice) =>
+              voice.lang.includes("en") &&
+              (voice.name.includes("Google") ||
+                voice.name.includes("Microsoft")),
+          ) ||
+          voices.find((voice) => voice.lang.includes("en")) ||
+          voices[0];
+
+        if (preferredVoice) {
+          utterance.voice = preferredVoice;
+        }
 
         utterance.onend = () => {
           setVoiceSettings((prev) => ({ ...prev, isSpeaking: false }));
         };
 
+        utterance.onerror = (event) => {
+          console.error("Speech synthesis error:", event);
+          setVoiceSettings((prev) => ({ ...prev, isSpeaking: false }));
+        };
+
         speechSynthesis.speak(utterance);
+      } else {
+        toast({
+          title: "Text-to-Speech Not Available",
+          description: "Your browser doesn't support text-to-speech.",
+          variant: "destructive",
+        });
       }
     },
     [voiceSettings.speechRate, voiceSettings.speechPitch],
