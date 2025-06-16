@@ -96,8 +96,15 @@ export function useChat() {
         );
 
         if (!response.ok) {
+          const errorText = await response.text();
+          console.error(
+            "API Response:",
+            response.status,
+            response.statusText,
+            errorText,
+          );
           throw new Error(
-            `API error: ${response.status} ${response.statusText}`,
+            `API error: ${response.status} - ${response.statusText}`,
           );
         }
 
