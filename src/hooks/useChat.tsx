@@ -102,17 +102,27 @@ export function useChat() {
           },
         );
 
+        console.log("API Response status:", response.status);
+        console.log("API Response headers:", response.headers);
+
         if (!response.ok) {
           const errorText = await response.text();
-          console.error(
-            "API Response:",
-            response.status,
-            response.statusText,
-            errorText,
-          );
-          throw new Error(
-            `API error: ${response.status} - ${response.statusText}`,
-          );
+          console.error("API Error Details:");
+          console.error("Status:", response.status);
+          console.error("Status Text:", response.statusText);
+          console.error("Response:", errorText);
+
+          if (response.status === 401) {
+            throw new Error("Authentication failed. Please check the API key.");
+          } else if (response.status === 403) {
+            throw new Error(
+              "Access forbidden. Please check your API permissions.",
+            );
+          } else {
+            throw new Error(
+              `API error: ${response.status} - ${response.statusText}: ${errorText}`,
+            );
+          }
         }
 
         const data = await response.json();
