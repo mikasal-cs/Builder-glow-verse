@@ -224,14 +224,10 @@ export function ChatInput({
             value={message}
             onChange={handleTextareaChange}
             onKeyDown={handleKeyDown}
-            placeholder={
-              isImageGenMode
-                ? "Describe the image you want to generate..."
-                : placeholder
-            }
+            placeholder={placeholder}
             disabled={disabled}
             className={cn(
-              "min-h-[3rem] max-h-[150px] resize-none border-0 bg-transparent",
+              "min-h-[3rem] max-h-[200px] resize-none border-0 bg-transparent",
               "focus-visible:ring-0 focus-visible:ring-offset-0",
               "placeholder:text-muted-foreground/70",
               "text-sm leading-relaxed px-4 py-3 pr-20",
