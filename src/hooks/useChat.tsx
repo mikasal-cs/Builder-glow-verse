@@ -184,63 +184,35 @@ export function useChat() {
       setIsTyping(true);
 
       try {
-        let response;
-        const requestBody = {
-          model: "google/gemini-2.0-flash-001",
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are Mikasal's helpful personal AI assistant that can analyze images.",
+        const response = await fetch(
+          "https://openrouter.ai/api/v1/chat/completions",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization:
+                "Bearer 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",
+              "HTTP-Referer": window.location.origin,
+              "X-Title": "Mikasal's AI Assistant",
             },
-            {
-              role: "user",
-              content:
-                "I've uploaded an image. Can you help me analyze or discuss it?",
-            },
-          ],
-          temperature: 0.7,
-        };
-
-        try {
-          // For production, try Netlify function first
-          if (!window.location.hostname.includes("localhost")) {
-            response = await fetch("/.netlify/functions/chat", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(requestBody),
-            });
-
-            if (!response.ok) {
-              throw new Error(`Netlify function failed: ${response.status}`);
-            }
-          } else {
-            throw new Error("Using direct API for localhost");
-          }
-        } catch (functionError) {
-          console.log(
-            "Netlify function failed for image upload, trying direct API:",
-            functionError.message,
-          );
-
-          // Fallback to direct API call
-          response = await fetch(
-            "https://openrouter.ai/api/v1/chat/completions",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization:
-                  "Bearer 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",
-                "HTTP-Referer": window.location.origin,
-                "X-Title": "Mikasal's AI Assistant",
-              },
-              body: JSON.stringify(requestBody),
-            },
-          );
-        }
+            body: JSON.stringify({
+              model: "google/gemini-2.0-flash-001",
+              messages: [
+                {
+                  role: "system",
+                  content:
+                    "You are Mikasal's helpful personal AI assistant that can analyze images.",
+                },
+                {
+                  role: "user",
+                  content:
+                    "I've uploaded an image. Can you help me analyze or discuss it?",
+                },
+              ],
+              temperature: 0.7,
+            }),
+          },
+        );
 
         if (!response.ok) {
           throw new Error(`API error: ${response.status}`);
