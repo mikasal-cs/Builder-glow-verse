@@ -16,7 +16,6 @@ import { toast } from "@/components/ui/use-toast";
 interface ChatInputProps {
   onSendMessage: (content: string, type?: "text" | "image") => void;
   onUploadImage: (file: File) => void;
-  onGenerateImage: (prompt: string) => void;
   onVoiceToggle: (isRecording: boolean) => void;
   isRecording?: boolean;
   disabled?: boolean;
