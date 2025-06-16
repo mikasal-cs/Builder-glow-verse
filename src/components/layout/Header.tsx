@@ -52,11 +52,11 @@ export function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) {
             </div>
           </div>
           <div>
-            <h1 className="text-lg font-bold gradient-text">
+            <h1 className="text-xl font-bold gradient-text">
               🤖 Mikasal's Assistant
             </h1>
             <p className="text-xs text-muted-foreground">
-              Personal AI Assistant
+              Created by Sir Mikasal Marak
             </p>
           </div>
         </div>

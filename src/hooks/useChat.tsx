@@ -7,7 +7,7 @@ export function useChat() {
     {
       id: "1",
       content:
-        "Hi! I am Mikasal's personal AI assistant, created to help you anytime.",
+        "👋 Hi! I'm Mikasal's personal AI assistant, created by Sir Mikasal Marak. How can I help you today?",
       type: "text",
       sender: "bot",
       timestamp: new Date(),
@@ -76,7 +76,7 @@ export function useChat() {
           {
             role: "system",
             content:
-              "You are Mikasal's helpful personal AI assistant. When asked about your identity, creator, or name, respond that you are Sir Mikasal's personal assistant.",
+              "You are Mikasal's personal assistant. Respond helpfully, clearly, and politely. If someone asks who created you or who you are, reply: 'I am Mikasal's personal assistant, created by Sir Mikasal Marak.'",
           },
           ...messages
             .filter((msg) => msg.sender === "user" || msg.sender === "bot")
@@ -92,7 +92,7 @@ export function useChat() {
         console.log("API Messages:", apiMessages);
 
         const requestBody = {
-          model: "google/gemini-flash-1.5",
+          model: "google/gemini-2.0-flash-001",
           messages: apiMessages,
           temperature: 0.7,
         };
@@ -106,7 +106,7 @@ export function useChat() {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${apiKey}`,
-              "HTTP-Referer": window.location.origin,
+              "HTTP-Referer": "https://mikasalpersonalassistant.netlify.app",
               "X-Title": "Mikasal's AI Assistant",
             },
             body: JSON.stringify(requestBody),
@@ -284,40 +284,17 @@ export function useChat() {
 
   const generateImage = useCallback(
     async (prompt: string) => {
+      // Image generation disabled as requested
       addMessage({
-        content: `Generate image: ${prompt}`,
+        content: `I understand you'd like me to generate an image, but I don't have image generation capabilities. However, I can help you with text-based tasks, analysis, coding, and many other things. What else can I assist you with?`,
         type: "text",
-        sender: "user",
+        sender: "bot",
+        metadata: {
+          model: "Gemini 2.0 Flash",
+          processingTime: 100,
+          tokens: 30,
+        },
       });
-
-      setIsTyping(true);
-
-      try {
-        // For now, we'll use a placeholder since Gemini doesn't generate images directly
-        // This would be replaced with an actual image generation API like DALL-E
-        const placeholderImage = `https://picsum.photos/512/512?random=${Date.now()}`;
-
-        addMessage({
-          content: `I understand you'd like me to generate an image with the prompt: "${prompt}". While I can't directly generate images yet, I can help you refine your prompt or suggest where you might get such an image created.`,
-          type: "text",
-          sender: "bot",
-          metadata: {
-            model: "Gemini 2.0 Flash",
-            processingTime: 1000,
-            tokens: 50,
-          },
-        });
-      } catch (error) {
-        console.error("Image generation error:", error);
-        addMessage({
-          content:
-            "I'm sorry, I can't generate images at the moment. However, I can help you create a detailed description or suggest alternatives.",
-          type: "text",
-          sender: "bot",
-        });
-      } finally {
-        setIsTyping(false);
-      }
     },
     [addMessage],
   );
@@ -358,7 +335,7 @@ export function useChat() {
       {
         id: "1",
         content:
-          "Hi! I am Mikasal's personal AI assistant, created to help you anytime.",
+          "👋 Hi! I'm Mikasal's personal AI assistant, created by Sir Mikasal Marak. How can I help you today?",
         type: "text",
         sender: "bot",
         timestamp: new Date(),

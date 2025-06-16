@@ -16,44 +16,46 @@ import { cn } from "@/lib/utils";
 interface PromptSuggestionsProps {
   onSelectPrompt: (prompt: string) => void;
   className?: string;
+  title?: string;
+  subtitle?: string;
 }
 
 const suggestions: PromptSuggestion[] = [
   {
     id: "1",
-    text: "Explain quantum computing in simple terms",
+    text: "What's the weather like today?",
     category: "general",
     icon: "brain",
   },
   {
     id: "2",
-    text: "Write a Python function to sort a list",
-    category: "coding",
-    icon: "code",
-  },
-  {
-    id: "3",
-    text: "Generate an image of a serene mountain landscape",
-    category: "image-generation",
-    icon: "image",
-  },
-  {
-    id: "4",
-    text: "Help me brainstorm creative business ideas",
+    text: "Tell me a joke",
     category: "creative",
     icon: "lightbulb",
   },
   {
-    id: "5",
-    text: "Analyze the pros and cons of remote work",
-    category: "analysis",
+    id: "3",
+    text: "Help me write a professional email",
+    category: "general",
     icon: "file-text",
   },
   {
-    id: "6",
-    text: "Tell me about Google's Gemini AI model",
+    id: "4",
+    text: "Explain how AI works in simple terms",
     category: "general",
+    icon: "brain",
+  },
+  {
+    id: "5",
+    text: "Give me some productivity tips",
+    category: "analysis",
     icon: "sparkles",
+  },
+  {
+    id: "6",
+    text: "Help me plan my day",
+    category: "general",
+    icon: "lightbulb",
   },
 ];
 
@@ -84,6 +86,8 @@ const categoryColors = {
 export function PromptSuggestions({
   onSelectPrompt,
   className,
+  title = "Get started with these suggestions",
+  subtitle = "Or type your own question below",
 }: PromptSuggestionsProps) {
   const getIcon = (iconName: string) => {
     const IconComponent = iconMap[iconName as keyof typeof iconMap];
@@ -97,12 +101,8 @@ export function PromptSuggestions({
   return (
     <div className={cn("w-full max-w-4xl mx-auto px-4", className)}>
       <div className="text-center mb-6">
-        <h2 className="text-lg font-semibold mb-2 gradient-text">
-          Get started with these suggestions
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Or type your own question below
-        </p>
+        <h2 className="text-lg font-semibold mb-2 gradient-text">{title}</h2>
+        <p className="text-sm text-muted-foreground">{subtitle}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

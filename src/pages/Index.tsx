@@ -16,7 +16,6 @@ const Index = () => {
     voiceSettings,
     sendMessage,
     uploadImage,
-    generateImage,
     startVoiceRecording,
     stopVoiceRecording,
     speakMessage,
@@ -100,7 +99,6 @@ const Index = () => {
             voiceSettings={voiceSettings}
             onSendMessage={sendMessage}
             onUploadImage={uploadImage}
-            onGenerateImage={generateImage}
             onVoiceToggle={handleVoiceToggle}
             onSpeakMessage={speakMessage}
           />

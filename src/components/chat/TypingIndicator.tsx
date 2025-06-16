@@ -37,7 +37,7 @@ export function TypingIndicator({ className }: TypingIndicatorProps) {
           </div>
           <div className="flex items-center space-x-1 mt-1">
             <span className="text-xs text-muted-foreground">
-              AI is typing...
+              Mikasal's Assistant is typing...
             </span>
           </div>
         </div>

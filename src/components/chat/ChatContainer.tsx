@@ -16,6 +16,10 @@ interface ChatContainerProps {
   onVoiceToggle: (isRecording: boolean) => void;
   onSpeakMessage: (text: string) => void;
   className?: string;
+  // Builder.io props
+  title?: string;
+  subtitle?: string;
+  showPromptSuggestions?: boolean;
 }
 
 export function ChatContainer({
@@ -24,10 +28,12 @@ export function ChatContainer({
   voiceSettings,
   onSendMessage,
   onUploadImage,
-  onGenerateImage,
   onVoiceToggle,
   onSpeakMessage,
   className,
+  title = "Get started with these suggestions",
+  subtitle = "Or type your own question below",
+  showPromptSuggestions = true,
 }: ChatContainerProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -60,9 +66,13 @@ export function ChatContainer({
       <ScrollArea ref={scrollAreaRef} className="flex-1 px-4">
         <div className="min-h-full flex flex-col">
           {/* Empty state with prompt suggestions */}
-          {!hasMessages && (
+          {!hasMessages && showPromptSuggestions && (
             <div className="flex-1 flex items-center justify-center py-12">
-              <PromptSuggestions onSelectPrompt={handlePromptSelect} />
+              <PromptSuggestions
+                onSelectPrompt={handlePromptSelect}
+                title={title}
+                subtitle={subtitle}
+              />
             </div>
           )}
 
@@ -93,7 +103,6 @@ export function ChatContainer({
         <ChatInput
           onSendMessage={onSendMessage}
           onUploadImage={onUploadImage}
-          onGenerateImage={onGenerateImage}
           onVoiceToggle={onVoiceToggle}
           isRecording={voiceSettings.isRecording}
           disabled={isTyping}
