@@ -86,7 +86,10 @@ export function useChat() {
         try {
           // For production, try Netlify function first
           if (!window.location.hostname.includes("localhost")) {
-            console.log("Trying Netlify function...");
+            console.log(
+              "Production environment detected, trying Netlify function...",
+            );
+            console.log("API URL: /.netlify/functions/chat");
             response = await fetch("/.netlify/functions/chat", {
               method: "POST",
               headers: {
