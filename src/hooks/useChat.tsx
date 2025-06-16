@@ -118,7 +118,7 @@ export function useChat() {
               headers: {
                 "Content-Type": "application/json",
                 Authorization:
-                  "Bearer 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",
+                  "Bearer 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",
                 "HTTP-Referer": window.location.href,
                 "X-Title": "Mikasal's AI Assistant",
               },
