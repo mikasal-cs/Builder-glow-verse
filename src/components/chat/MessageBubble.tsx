@@ -161,29 +161,6 @@ export function MessageBubble({
                 </p>
               </div>
             )}
-
-            {/* Message metadata */}
-            {message.metadata && isBot && (
-              <div className="mt-3 pt-2 border-t border-current/10 text-xs text-muted-foreground space-y-1">
-                <div className="flex items-center space-x-2">
-                  <span>Model: {message.metadata.model}</span>
-                  {message.metadata.processingTime && (
-                    <>
-                      <span>•</span>
-                      <span>
-                        {Math.round(message.metadata.processingTime)}ms
-                      </span>
-                    </>
-                  )}
-                  {message.metadata.tokens && (
-                    <>
-                      <span>•</span>
-                      <span>{message.metadata.tokens} tokens</span>
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Message actions */}
