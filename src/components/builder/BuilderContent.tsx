@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { BuilderComponent } from "@builder.io/react";
-import { Builder } from "../../builder.init";
+
+// Conditional Builder.io imports with error handling
+let BuilderComponent: any = null;
+let Builder: any = null;
+
+try {
+  const builderReact = require("@builder.io/react");
+  BuilderComponent = builderReact.BuilderComponent;
+  Builder = require("../../builder.init").Builder;
+} catch (error) {
+  console.warn("Builder.io not available:", error);
+}
 
 interface BuilderContentProps {
   model?: string;
@@ -45,6 +55,17 @@ export function BuilderContent({
     return (
       <div className="flex items-center justify-center p-8">
         <div className="loading-shimmer w-full h-32 rounded-lg"></div>
+      </div>
+    );
+  }
+
+  if (!Builder || !BuilderComponent) {
+    return (
+      <div className="flex flex-col items-center justify-center p-8 text-center">
+        <h2 className="text-lg font-semibold mb-2">Builder.io Not Available</h2>
+        <p className="text-muted-foreground">
+          Builder.io is not configured or not available in this environment.
+        </p>
       </div>
     );
   }
