@@ -1,11 +1,11 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
-import { BuilderComponent, builder, useIsPreviewing } from "@builder.io/react";
+import { BuilderComponent, builder } from "@builder.io/react";
 import { customComponents } from "../../../builder-registry";
 
 // Initialize Builder.io with your API key
-builder.init(process.env.REACT_APP_BUILDER_API_KEY || "your-builder-api-key");
+const BUILDER_API_KEY =
+  import.meta.env.VITE_BUILDER_API_KEY || "your-builder-api-key";
+builder.init(BUILDER_API_KEY);
 
 // Register custom components
 customComponents.forEach((component) => {
@@ -29,7 +29,12 @@ export function BuilderContent({
 }: BuilderContentProps) {
   const [content, setContent] = useState(initialContent);
   const [loading, setLoading] = useState(!initialContent);
-  const isPreviewing = useIsPreviewing();
+
+  // Check if we're in Builder.io preview mode
+  const isPreviewing =
+    typeof window !== "undefined" &&
+    (window.location.search.includes("builder.preview=") ||
+      window.location.pathname.includes("/builder/"));
 
   useEffect(() => {
     if (!initialContent) {
@@ -70,11 +75,5 @@ export function BuilderContent({
     );
   }
 
-  return (
-    <BuilderComponent
-      model={model}
-      content={content}
-      apiKey={process.env.REACT_APP_BUILDER_API_KEY || "your-builder-api-key"}
-    />
-  );
+  return <BuilderComponent model={model} content={content} />;
 }
