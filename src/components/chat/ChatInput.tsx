@@ -157,7 +157,8 @@ export function ChatInput({
     if (!recognitionRef.current) {
       toast({
         title: "Voice Input Not Supported",
-        description: "Your browser doesn't support voice input.",
+        description:
+          "Your browser doesn't support voice input. Try using Chrome or Edge.",
         variant: "destructive",
       });
       return;
@@ -166,11 +167,28 @@ export function ChatInput({
     if (isListening) {
       recognitionRef.current.stop();
       setIsListening(false);
+      onVoiceToggle(false);
     } else {
       setIsListening(true);
-      recognitionRef.current.start();
+      onVoiceToggle(true);
+      try {
+        recognitionRef.current.start();
+        toast({
+          title: "🎤 Listening...",
+          description: "Speak now. I'm listening to your voice input.",
+        });
+      } catch (error) {
+        console.error("Speech recognition start error:", error);
+        setIsListening(false);
+        onVoiceToggle(false);
+        toast({
+          title: "Voice Input Error",
+          description: "Could not start voice recognition. Please try again.",
+          variant: "destructive",
+        });
+      }
     }
-  }, [isListening]);
+  }, [isListening, onVoiceToggle]);
 
   const isMessageValid = message.trim().length > 0;
   const canSend = isMessageValid && !disabled;
