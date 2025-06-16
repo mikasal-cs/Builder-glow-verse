@@ -91,6 +91,22 @@ export function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) {
             <span className="sr-only">Toggle theme</span>
           </Button>
 
+          {/* Test API button (temporary) */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative group"
+            onClick={async () => {
+              console.log("=== Testing API Key ===");
+              await testApiKey();
+              console.log("=== Testing Simple Chat ===");
+              await testSimpleChat();
+            }}
+          >
+            <TestTube className="h-4 w-4" />
+            <span className="sr-only">Test API</span>
+          </Button>
+
           {/* Settings button */}
           <Button variant="ghost" size="icon" className="relative group">
             <Settings className="h-4 w-4 transition-transform group-hover:rotate-90" />
