@@ -41,7 +41,7 @@ export async function testSimpleChat() {
             "Bearer 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",
         },
         body: JSON.stringify({
-          model: "google/gemini-2.0-flash-001",
+          model: "google/gemini-2.0-flash-thinking-exp",
           messages: [{ role: "user", content: "Hello" }],
           max_tokens: 10,
         }),
