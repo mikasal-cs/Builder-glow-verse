@@ -198,6 +198,7 @@ export function MessageBubble({
                   size="icon"
                   onClick={handleSpeak}
                   className="h-6 w-6 text-muted-foreground hover:text-foreground"
+                  title={isSpeaking ? "Stop speaking" : "🔊 Listen to reply"}
                 >
                   {isSpeaking ? (
                     <VolumeX className="w-3 h-3" />
