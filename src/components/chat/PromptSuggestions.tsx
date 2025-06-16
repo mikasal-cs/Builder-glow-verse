@@ -51,7 +51,7 @@ const suggestions: PromptSuggestion[] = [
   },
   {
     id: "6",
-    text: "What are the latest trends in AI?",
+    text: "Tell me about Google's Gemini AI model",
     category: "general",
     icon: "sparkles",
   },
