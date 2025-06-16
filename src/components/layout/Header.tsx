@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "../../providers/ThemeProvider";
+import { testApiKey, testSimpleChat } from "../../utils/testApi";
 import {
   Sun,
   Moon,
@@ -9,6 +10,7 @@ import {
   Bot,
   MessageCircle,
   Sparkles,
+  TestTube,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
