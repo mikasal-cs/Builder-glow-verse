@@ -25,17 +25,17 @@ interface ChatInputProps {
 export function ChatInput({
   onSendMessage,
   onUploadImage,
-  onGenerateImage,
   onVoiceToggle,
   isRecording = false,
   disabled = false,
   placeholder = "Type your message here...",
 }: ChatInputProps) {
   const [message, setMessage] = useState("");
-  const [isImageGenMode, setIsImageGenMode] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<FileUpload[]>([]);
+  const [isListening, setIsListening] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const recognitionRef = useRef<any>(null);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
