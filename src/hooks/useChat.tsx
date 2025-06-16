@@ -105,8 +105,7 @@ export function useChat() {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization:
-                "Bearer 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",
+              Authorization: `Bearer ${apiKey}`,
               "HTTP-Referer": window.location.origin,
               "X-Title": "Mikasal's AI Assistant",
             },
