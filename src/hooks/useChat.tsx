@@ -112,6 +112,12 @@ export function useChat() {
       } catch (error) {
         console.error("API Error:", error);
 
+        toast({
+          title: "Connection Error",
+          description: "Failed to connect to AI service. Please try again.",
+          variant: "destructive",
+        });
+
         // Add error message
         addMessage({
           content:
