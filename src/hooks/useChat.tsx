@@ -59,17 +59,13 @@ export function useChat() {
       try {
         const startTime = Date.now();
 
-        // Validate API key format
-        const apiKey =
-          "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";
-        console.log(
-          "Using API key (first 20 chars):",
-          apiKey.substring(0, 20) + "...",
-        );
+        // RapidAPI configuration
+        const rapidApiKey =
+          "6205d2f407msh45a5e77f3e8b26bp1499e5jsndd78c4e48ad1";
+        const rapidApiHost =
+          "cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com";
 
-        if (!apiKey.startsWith("sk-or-v1-")) {
-          throw new Error("Invalid API key format");
-        }
+        console.log("Using RapidAPI for chat completion...");
 
         // Prepare messages for API
         const apiMessages = [
@@ -92,22 +88,22 @@ export function useChat() {
         console.log("API Messages:", apiMessages);
 
         const requestBody = {
-          model: "google/gemini-2.0-flash-001",
+          model: "gpt-4o",
           messages: apiMessages,
-          temperature: 0.7,
+          max_tokens: 1024,
+          temperature: 0.9,
         };
 
         console.log("Request body:", JSON.stringify(requestBody, null, 2));
 
         const response = await fetch(
-          "https://openrouter.ai/api/v1/chat/completions",
+          "https://cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com/v1/chat/completions",
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${apiKey}`,
-              "HTTP-Referer": "https://mikasalpersonalassistant.netlify.app",
-              "X-Title": "Mikasal's AI Assistant",
+              "x-rapidapi-key": rapidApiKey,
+              "x-rapidapi-host": rapidApiHost,
             },
             body: JSON.stringify(requestBody),
           },
@@ -118,20 +114,26 @@ export function useChat() {
 
         if (!response.ok) {
           const errorText = await response.text();
-          console.error("API Error Details:");
+          console.error("RapidAPI Error Details:");
           console.error("Status:", response.status);
           console.error("Status Text:", response.statusText);
           console.error("Response:", errorText);
 
           if (response.status === 401) {
-            throw new Error("Authentication failed. Please check the API key.");
+            throw new Error(
+              "RapidAPI authentication failed. Please check the API key.",
+            );
           } else if (response.status === 403) {
             throw new Error(
-              "Access forbidden. Please check your API permissions.",
+              "RapidAPI access forbidden. Please check your subscription.",
+            );
+          } else if (response.status === 429) {
+            throw new Error(
+              "RapidAPI rate limit exceeded. Please try again later.",
             );
           } else {
             throw new Error(
-              `API error: ${response.status} - ${response.statusText}: ${errorText}`,
+              `RapidAPI error: ${response.status} - ${response.statusText}: ${errorText}`,
             );
           }
         }
@@ -148,7 +150,7 @@ export function useChat() {
           type: "text",
           sender: "bot",
           metadata: {
-            model: "Gemini 2.0 Flash",
+            model: "GPT-4o",
             processingTime,
             tokens: data.usage?.total_tokens || 0,
           },
@@ -162,20 +164,20 @@ export function useChat() {
 
         if (error instanceof TypeError && error.message.includes("fetch")) {
           errorMessage =
-            "I'm having trouble connecting to the AI service. This might be due to network restrictions on your domain.";
-          toastMessage = "Network error - possibly CORS issue on your domain.";
+            "I'm having trouble connecting to the AI service. Please check your internet connection.";
+          toastMessage = "Network error - failed to connect to RapidAPI.";
         } else if (error instanceof Error && error.message.includes("401")) {
           errorMessage =
-            "Authentication failed. Please check the API configuration.";
-          toastMessage = "API authentication error.";
+            "Authentication failed. Please check the RapidAPI configuration.";
+          toastMessage = "RapidAPI authentication error.";
         } else if (error instanceof Error && error.message.includes("429")) {
           errorMessage =
             "I'm currently experiencing high demand. Please try again in a moment.";
-          toastMessage = "Rate limit exceeded. Please wait.";
+          toastMessage = "RapidAPI rate limit exceeded. Please wait.";
         }
 
         toast({
-          title: "Connection Error",
+          title: "RapidAPI Connection Error",
           description: toastMessage,
           variant: "destructive",
         });
@@ -211,19 +213,22 @@ export function useChat() {
       setIsTyping(true);
 
       try {
+        const rapidApiKey =
+          "6205d2f407msh45a5e77f3e8b26bp1499e5jsndd78c4e48ad1";
+        const rapidApiHost =
+          "cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com";
+
         const response = await fetch(
-          "https://openrouter.ai/api/v1/chat/completions",
+          "https://cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com/v1/chat/completions",
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization:
-                "Bearer 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",
-              "HTTP-Referer": window.location.origin,
-              "X-Title": "Mikasal's AI Assistant",
+              "x-rapidapi-key": rapidApiKey,
+              "x-rapidapi-host": rapidApiHost,
             },
             body: JSON.stringify({
-              model: "google/gemini-2.0-flash-001",
+              model: "gpt-4o",
               messages: [
                 {
                   role: "system",
@@ -236,7 +241,8 @@ export function useChat() {
                     "I've uploaded an image. Can you help me analyze or discuss it?",
                 },
               ],
-              temperature: 0.7,
+              max_tokens: 1024,
+              temperature: 0.9,
             }),
           },
         );
@@ -255,7 +261,7 @@ export function useChat() {
           type: "text",
           sender: "bot",
           metadata: {
-            model: "Gemini 2.0 Flash",
+            model: "GPT-4o",
             processingTime: 1000,
             tokens: data.usage?.total_tokens || 0,
           },
