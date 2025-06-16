@@ -82,13 +82,7 @@ export function ChatInput({
       e.preventDefault();
       if (!message.trim() || disabled) return;
 
-      if (isImageGenMode) {
-        onGenerateImage(message.trim());
-        setIsImageGenMode(false);
-      } else {
-        onSendMessage(message.trim());
-      }
-
+      onSendMessage(message.trim());
       setMessage("");
       setUploadedFiles([]);
 
@@ -97,7 +91,7 @@ export function ChatInput({
         textareaRef.current.style.height = "auto";
       }
     },
-    [message, disabled, isImageGenMode, onSendMessage, onGenerateImage],
+    [message, disabled, onSendMessage],
   );
 
   const handleKeyDown = useCallback(
