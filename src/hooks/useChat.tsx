@@ -128,23 +128,35 @@ export function useChat() {
       } catch (error) {
         console.error("API Error:", error);
 
+        let errorMessage =
+          "I'm sorry, I encountered an error while processing your request.";
+        let toastMessage = "Failed to connect to AI service.";
+
+        if (error instanceof TypeError && error.message.includes("fetch")) {
+          errorMessage =
+            "I'm having trouble connecting to the AI service. This might be due to network restrictions on your domain.";
+          toastMessage = "Network error - possibly CORS issue on your domain.";
+        } else if (error instanceof Error && error.message.includes("401")) {
+          errorMessage =
+            "Authentication failed. Please check the API configuration.";
+          toastMessage = "API authentication error.";
+        } else if (error instanceof Error && error.message.includes("429")) {
+          errorMessage =
+            "I'm currently experiencing high demand. Please try again in a moment.";
+          toastMessage = "Rate limit exceeded. Please wait.";
+        }
+
         toast({
           title: "Connection Error",
-          description: "Failed to connect to AI service. Please try again.",
+          description: toastMessage,
           variant: "destructive",
         });
 
         // Add error message
         addMessage({
-          content:
-            "I'm sorry, I encountered an error while processing your request. Please check your connection and try again.",
+          content: errorMessage,
           type: "text",
           sender: "bot",
-          metadata: {
-            model: "Error",
-            processingTime: 0,
-            tokens: 0,
-          },
         });
       } finally {
         setIsTyping(false);
