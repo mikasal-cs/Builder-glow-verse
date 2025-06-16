@@ -49,12 +49,12 @@ export function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) {
               <Sparkles className="w-2.5 h-2.5 text-white" />
             </div>
           </div>
-          <div className="hidden sm:block">
-            <h1 className="text-lg font-semibold gradient-text">
-              AI Assistant
+          <div>
+            <h1 className="text-lg font-bold gradient-text">
+              🤖 Mikasal's Assistant
             </h1>
             <p className="text-xs text-muted-foreground">
-              Powered by advanced AI
+              Personal AI Assistant
             </p>
           </div>
         </div>
