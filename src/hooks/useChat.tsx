@@ -37,13 +37,6 @@ export function useChat() {
     [],
   );
 
-  const simulateTyping = useCallback(() => {
-    setIsTyping(true);
-    // Simulate realistic typing delay
-    const delay = Math.random() * 2000 + 1000;
-    return new Promise((resolve) => setTimeout(resolve, delay));
-  }, []);
-
   const sendMessage = useCallback(
     async (content: string, type: Message["type"] = "text") => {
       // Add user message
