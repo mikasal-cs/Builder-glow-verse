@@ -47,30 +47,94 @@ export function useChat() {
   const sendMessage = useCallback(
     async (content: string, type: Message["type"] = "text") => {
       // Add user message
-      addMessage({
+      const userMessage = addMessage({
         content,
         type,
         sender: "user",
       });
 
-      // Simulate bot thinking
-      await simulateTyping();
-      setIsTyping(false);
+      // Start typing indicator
+      setIsTyping(true);
 
-      // Generate bot response (this would be replaced with actual AI API call)
-      const botResponse = generateBotResponse(content, type);
-      addMessage({
-        content: botResponse,
-        type: "text",
-        sender: "bot",
-        metadata: {
-          model: "GPT-4",
-          processingTime: Math.random() * 2000 + 500,
-          tokens: Math.floor(Math.random() * 100) + 20,
-        },
-      });
+      try {
+        const startTime = Date.now();
+
+        // Prepare messages for API
+        const apiMessages = [
+          { role: "system", content: "You are a helpful assistant." },
+          ...messages
+            .filter((msg) => msg.sender === "user" || msg.sender === "bot")
+            .map((msg) => ({
+              role: msg.sender === "user" ? "user" : "assistant",
+              content: msg.content,
+            })),
+          { role: "user", content },
+        ];
+
+        // Call OpenRouter API
+        const response = await fetch(
+          "https://openrouter.ai/api/v1/chat/completions",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization:
+                "Bearer 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",
+              "HTTP-Referer": window.location.origin,
+              "X-Title": "AI Assistant Chat",
+            },
+            body: JSON.stringify({
+              model: "google/gemini-2.0-flash-001",
+              messages: apiMessages,
+              temperature: 0.7,
+              max_tokens: 4000,
+            }),
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            `API error: ${response.status} ${response.statusText}`,
+          );
+        }
+
+        const data = await response.json();
+        const botResponse =
+          data.choices?.[0]?.message?.content ||
+          "I apologize, but I couldn't generate a response. Please try again.";
+        const processingTime = Date.now() - startTime;
+
+        // Add bot response
+        addMessage({
+          content: botResponse,
+          type: "text",
+          sender: "bot",
+          metadata: {
+            model: "Gemini 2.0 Flash",
+            processingTime,
+            tokens: data.usage?.total_tokens || 0,
+          },
+        });
+      } catch (error) {
+        console.error("API Error:", error);
+
+        // Add error message
+        addMessage({
+          content:
+            "I'm sorry, I encountered an error while processing your request. Please check your connection and try again.",
+          type: "text",
+          sender: "bot",
+          metadata: {
+            model: "Error",
+            processingTime: 0,
+            tokens: 0,
+          },
+        });
+      } finally {
+        setIsTyping(false);
+      }
     },
-    [addMessage, simulateTyping],
+    [addMessage, messages],
   );
 
   const uploadImage = useCallback(
