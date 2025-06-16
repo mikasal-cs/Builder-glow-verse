@@ -75,7 +75,7 @@ export function useChat() {
           { role: "user", content },
         ];
 
-        // Call OpenRouter API
+        // Call OpenRouter API with better CORS handling
         const response = await fetch(
           "https://openrouter.ai/api/v1/chat/completions",
           {
@@ -84,8 +84,8 @@ export function useChat() {
               "Content-Type": "application/json",
               Authorization:
                 "Bearer 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",
-              "HTTP-Referer": window.location.origin,
-              "X-Title": "AI Assistant Chat",
+              "HTTP-Referer": window.location.href,
+              "X-Title": "Mikasal's AI Assistant",
             },
             body: JSON.stringify({
               model: "google/gemini-2.0-flash-001",
