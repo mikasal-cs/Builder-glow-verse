@@ -12,7 +12,7 @@ export function useChat() {
       sender: "bot",
       timestamp: new Date(),
       metadata: {
-        model: "Gemini 2.0 Flash",
+        model: "GPT-4o",
         processingTime: 0,
         tokens: 0,
       },
@@ -375,7 +375,7 @@ export function useChat() {
         sender: "bot",
         timestamp: new Date(),
         metadata: {
-          model: "Gemini 2.0 Flash",
+          model: "GPT-4o",
           processingTime: 0,
           tokens: 0,
         },
