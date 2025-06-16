@@ -185,4 +185,55 @@
   .btn-modern {
     @apply relative overflow-hidden transition-all duration-200 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700;
   }
+
+  /* Professional chat interface enhancements */
+  .chat-bubble-user {
+    @apply bg-gradient-to-br from-ai-primary to-ai-primary/90 text-white shadow-lg;
+  }
+
+  .chat-bubble-bot {
+    @apply bg-gradient-to-br from-muted/80 to-muted/60 backdrop-blur-sm border border-border/50 shadow-sm;
+  }
+
+  /* Enhanced typing indicator animation */
+  .typing-dots span:nth-child(1) {
+    animation-delay: 0ms;
+  }
+  .typing-dots span:nth-child(2) {
+    animation-delay: 200ms;
+  }
+  .typing-dots span:nth-child(3) {
+    animation-delay: 400ms;
+  }
+
+  /* Professional voice recording animation */
+  .voice-recording {
+    @apply animate-pulse-glow;
+  }
+
+  /* Enhanced scroll behavior */
+  .chat-scroll {
+    scroll-behavior: smooth;
+  }
+
+  /* Professional loading state */
+  .loading-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
 }
