@@ -190,35 +190,42 @@ export function useChat() {
       setIsTyping(true);
 
       try {
-        const response = await fetch(
-          "https://openrouter.ai/api/v1/chat/completions",
-          {
-            method: "POST",
-            headers: {
+        const apiUrl = window.location.hostname.includes("localhost")
+          ? "https://openrouter.ai/api/v1/chat/completions"
+          : "/.netlify/functions/chat";
+
+        const headers = window.location.hostname.includes("localhost")
+          ? {
               "Content-Type": "application/json",
               Authorization:
                 "Bearer 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",
               "HTTP-Referer": window.location.origin,
-              "X-Title": "AI Assistant Chat",
-            },
-            body: JSON.stringify({
-              model: "google/gemini-2.0-flash-001",
-              messages: [
-                {
-                  role: "system",
-                  content:
-                    "You are a helpful assistant that can analyze images.",
-                },
-                {
-                  role: "user",
-                  content:
-                    "I've uploaded an image. Can you help me analyze or discuss it?",
-                },
-              ],
-              temperature: 0.7,
-            }),
-          },
-        );
+              "X-Title": "Mikasal's AI Assistant",
+            }
+          : {
+              "Content-Type": "application/json",
+            };
+
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            model: "google/gemini-2.0-flash-001",
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are Mikasal's helpful personal AI assistant that can analyze images.",
+              },
+              {
+                role: "user",
+                content:
+                  "I've uploaded an image. Can you help me analyze or discuss it?",
+              },
+            ],
+            temperature: 0.7,
+          }),
+        });
 
         if (!response.ok) {
           throw new Error(`API error: ${response.status}`);
