@@ -75,32 +75,54 @@ export function useChat() {
           { role: "user", content },
         ];
 
-        // Use Netlify function for production, direct API for development
-        const apiUrl = window.location.hostname.includes("localhost")
-          ? "https://openrouter.ai/api/v1/chat/completions"
-          : "/.netlify/functions/chat";
+        // Try Netlify function first, fallback to direct API if needed
+        let response;
+        const requestBody = {
+          model: "google/gemini-2.0-flash-001",
+          messages: apiMessages,
+          temperature: 0.7,
+        };
 
-        const headers = window.location.hostname.includes("localhost")
-          ? {
-              "Content-Type": "application/json",
-              Authorization:
-                "Bearer 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",
-              "HTTP-Referer": window.location.href,
-              "X-Title": "Mikasal's AI Assistant",
+        try {
+          // For production, try Netlify function first
+          if (!window.location.hostname.includes("localhost")) {
+            console.log("Trying Netlify function...");
+            response = await fetch("/.netlify/functions/chat", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(requestBody),
+            });
+
+            if (!response.ok) {
+              throw new Error(`Netlify function failed: ${response.status}`);
             }
-          : {
-              "Content-Type": "application/json",
-            };
+          } else {
+            throw new Error("Using direct API for localhost");
+          }
+        } catch (functionError) {
+          console.log(
+            "Netlify function failed, trying direct API:",
+            functionError.message,
+          );
 
-        const response = await fetch(apiUrl, {
-          method: "POST",
-          headers,
-          body: JSON.stringify({
-            model: "google/gemini-2.0-flash-001",
-            messages: apiMessages,
-            temperature: 0.7,
-          }),
-        });
+          // Fallback to direct API call
+          response = await fetch(
+            "https://openrouter.ai/api/v1/chat/completions",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization:
+                  "Bearer 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",
+                "HTTP-Referer": window.location.href,
+                "X-Title": "Mikasal's AI Assistant",
+              },
+              body: JSON.stringify(requestBody),
+            },
+          );
+        }
 
         if (!response.ok) {
           const errorText = await response.text();
