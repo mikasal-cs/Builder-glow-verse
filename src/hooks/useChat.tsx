@@ -251,26 +251,3 @@ export function useChat() {
     setVoiceSettings,
   };
 }
-
-// Helper function to generate bot responses (would be replaced with actual AI API)
-function generateBotResponse(
-  userMessage: string,
-  type: Message["type"],
-): string {
-  const responses = [
-    "That's an interesting point! Let me think about that...",
-    "I understand what you're asking. Here's my perspective on that:",
-    "Great question! Based on my knowledge, I'd say:",
-    "That's a thoughtful inquiry. Let me provide you with some insights:",
-    "I can help you with that. Here's what I know:",
-  ];
-
-  const randomResponse =
-    responses[Math.floor(Math.random() * responses.length)];
-
-  if (type === "image") {
-    return "I can see the image you've shared. Could you tell me what you'd like to know about it?";
-  }
-
-  return `${randomResponse} ${userMessage.split(" ").reverse().join(" ")} - This is a simulated response that will be replaced with actual AI integration.`;
-}
