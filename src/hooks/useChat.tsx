@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 import { Message, VoiceSettings } from "../types/chat";
+import { toast } from "@/components/ui/use-toast";
 
 export function useChat() {
   const [messages, setMessages] = useState<Message[]>([
