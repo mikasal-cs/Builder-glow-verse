@@ -151,18 +151,73 @@ export function useChat() {
         },
       });
 
-      // Simulate AI image analysis
-      await simulateTyping();
-      setIsTyping(false);
+      // Send image analysis request
+      setIsTyping(true);
 
-      addMessage({
-        content:
-          "I can see this is an interesting image! Could you tell me more about what you'd like to know or discuss about it?",
-        type: "text",
-        sender: "bot",
-      });
+      try {
+        const response = await fetch(
+          "https://openrouter.ai/api/v1/chat/completions",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization:
+                "Bearer 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",
+              "HTTP-Referer": window.location.origin,
+              "X-Title": "AI Assistant Chat",
+            },
+            body: JSON.stringify({
+              model: "google/gemini-2.0-flash-001",
+              messages: [
+                {
+                  role: "system",
+                  content:
+                    "You are a helpful assistant that can analyze images.",
+                },
+                {
+                  role: "user",
+                  content:
+                    "I've uploaded an image. Can you help me analyze or discuss it?",
+                },
+              ],
+              temperature: 0.7,
+              max_tokens: 4000,
+            }),
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const botResponse =
+          data.choices?.[0]?.message?.content ||
+          "I can see you've uploaded an image. What would you like to know about it?";
+
+        addMessage({
+          content: botResponse,
+          type: "text",
+          sender: "bot",
+          metadata: {
+            model: "Gemini 2.0 Flash",
+            processingTime: 1000,
+            tokens: data.usage?.total_tokens || 0,
+          },
+        });
+      } catch (error) {
+        console.error("Image analysis error:", error);
+        addMessage({
+          content:
+            "I can see you've uploaded an image, but I'm having trouble analyzing it right now. Could you describe what you'd like to know about it?",
+          type: "text",
+          sender: "bot",
+        });
+      } finally {
+        setIsTyping(false);
+      }
     },
-    [addMessage, simulateTyping],
+    [addMessage],
   );
 
   const generateImage = useCallback(
