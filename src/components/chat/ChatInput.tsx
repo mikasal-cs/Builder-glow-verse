@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -7,13 +7,11 @@ import {
   Mic,
   MicOff,
   Image as ImageIcon,
-  Palette,
   X,
-  Plus,
-  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FileUpload } from "../../types/chat";
+import { toast } from "@/components/ui/use-toast";
 
 interface ChatInputProps {
   onSendMessage: (content: string, type?: "text" | "image") => void;
