@@ -1,20 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { BuilderComponent, builder } from "@builder.io/react";
-import { customComponents } from "../../../builder-registry";
-
-// Initialize Builder.io with your API key
-const BUILDER_API_KEY =
-  import.meta.env.VITE_BUILDER_API_KEY || "your-builder-api-key";
-builder.init(BUILDER_API_KEY);
-
-// Register custom components
-customComponents.forEach((component) => {
-  builder.registerComponent(component.component, {
-    name: component.name,
-    inputs: component.inputs,
-    canHaveChildren: component.canHaveChildren,
-  });
-});
+import { BuilderComponent } from "@builder.io/react";
+import { Builder } from "../../builder.init";
 
 interface BuilderContentProps {
   model?: string;
@@ -39,11 +25,10 @@ export function BuilderContent({
   useEffect(() => {
     if (!initialContent) {
       setLoading(true);
-      builder
-        .get(model, {
-          url,
-          prerender: false,
-        })
+      Builder.get(model, {
+        url,
+        prerender: false,
+      })
         .promise()
         .then((content) => {
           setContent(content);
