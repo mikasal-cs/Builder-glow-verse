@@ -92,7 +92,7 @@ export function useChat() {
         console.log("API Messages:", apiMessages);
 
         const requestBody = {
-          model: "google/gemini-2.0-flash-001",
+          model: "google/gemini-flash-1.5",
           messages: apiMessages,
           temperature: 0.7,
         };
