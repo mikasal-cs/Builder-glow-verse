@@ -75,25 +75,32 @@ export function useChat() {
           { role: "user", content },
         ];
 
-        // Call OpenRouter API directly
-        const response = await fetch(
-          "https://openrouter.ai/api/v1/chat/completions",
-          {
-            method: "POST",
-            headers: {
+        // Use Netlify function for production, direct API for development
+        const apiUrl = window.location.hostname.includes("localhost")
+          ? "https://openrouter.ai/api/v1/chat/completions"
+          : "/.netlify/functions/chat";
+
+        const headers = window.location.hostname.includes("localhost")
+          ? {
               "Content-Type": "application/json",
               Authorization:
                 "Bearer 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",
               "HTTP-Referer": window.location.href,
               "X-Title": "Mikasal's AI Assistant",
-            },
-            body: JSON.stringify({
-              model: "google/gemini-2.0-flash-001",
-              messages: apiMessages,
-              temperature: 0.7,
-            }),
-          },
-        );
+            }
+          : {
+              "Content-Type": "application/json",
+            };
+
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            model: "google/gemini-2.0-flash-001",
+            messages: apiMessages,
+            temperature: 0.7,
+          }),
+        });
 
         if (!response.ok) {
           const errorText = await response.text();
