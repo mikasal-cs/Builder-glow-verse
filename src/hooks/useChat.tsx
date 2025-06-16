@@ -6,10 +6,16 @@ export function useChat() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hello! I'm your AI assistant. How can I help you today?",
+      content:
+        "Hello! I'm your AI assistant powered by Google's Gemini 2.0 Flash model. I can help you with questions, analysis, creative tasks, and more. How can I assist you today?",
       type: "text",
       sender: "bot",
       timestamp: new Date(),
+      metadata: {
+        model: "Gemini 2.0 Flash",
+        processingTime: 0,
+        tokens: 0,
+      },
     },
   ]);
 
