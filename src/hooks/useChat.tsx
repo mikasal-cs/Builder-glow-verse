@@ -59,6 +59,18 @@ export function useChat() {
       try {
         const startTime = Date.now();
 
+        // Validate API key format
+        const apiKey =
+          "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";
+        console.log(
+          "Using API key (first 20 chars):",
+          apiKey.substring(0, 20) + "...",
+        );
+
+        if (!apiKey.startsWith("sk-or-v1-")) {
+          throw new Error("Invalid API key format");
+        }
+
         // Prepare messages for API
         const apiMessages = [
           {
