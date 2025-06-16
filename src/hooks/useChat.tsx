@@ -207,6 +207,13 @@ export function useChat() {
         });
       } catch (error) {
         console.error("Image analysis error:", error);
+
+        toast({
+          title: "Image Analysis Error",
+          description: "Unable to analyze the image. Please try again.",
+          variant: "destructive",
+        });
+
         addMessage({
           content:
             "I can see you've uploaded an image, but I'm having trouble analyzing it right now. Could you describe what you'd like to know about it?",
