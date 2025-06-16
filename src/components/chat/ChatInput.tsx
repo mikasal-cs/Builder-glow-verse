@@ -237,18 +237,18 @@ export function ChatInput({
 
           {/* Action buttons */}
           <div className="absolute right-2 bottom-2 flex items-center space-x-1">
-            {/* Voice recording button */}
+            {/* Voice input button */}
             <Button
               type="button"
-              variant={isRecording ? "destructive" : "ghost"}
+              variant={isListening ? "destructive" : "ghost"}
               size="icon"
-              onClick={handleVoiceToggle}
+              onClick={handleVoiceInput}
               className={cn(
                 "h-8 w-8 transition-all duration-200",
-                isRecording && "animate-pulse-glow",
+                isListening && "animate-pulse-glow",
               )}
             >
-              {isRecording ? (
+              {isListening ? (
                 <MicOff className="w-4 h-4" />
               ) : (
                 <Mic className="w-4 h-4" />
