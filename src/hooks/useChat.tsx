@@ -77,6 +77,16 @@ export function useChat() {
 
         // Call OpenRouter API directly
         console.log("Making direct API call to OpenRouter...");
+        console.log("API Messages:", apiMessages);
+
+        const requestBody = {
+          model: "google/gemini-2.0-flash-001",
+          messages: apiMessages,
+          temperature: 0.7,
+        };
+
+        console.log("Request body:", JSON.stringify(requestBody, null, 2));
+
         const response = await fetch(
           "https://openrouter.ai/api/v1/chat/completions",
           {
@@ -85,14 +95,10 @@ export function useChat() {
               "Content-Type": "application/json",
               Authorization:
                 "Bearer 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",
-              "HTTP-Referer": window.location.href,
+              "HTTP-Referer": window.location.origin,
               "X-Title": "Mikasal's AI Assistant",
             },
-            body: JSON.stringify({
-              model: "google/gemini-2.0-flash-001",
-              messages: apiMessages,
-              temperature: 0.7,
-            }),
+            body: JSON.stringify(requestBody),
           },
         );
 
