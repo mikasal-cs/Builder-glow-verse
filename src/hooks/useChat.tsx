@@ -12,7 +12,7 @@ export function useChat() {
       sender: "bot",
       timestamp: new Date(),
       metadata: {
-        model: "GPT-4o",
+        model: "Infinite GPT",
         processingTime: 0,
         tokens: 0,
       },
@@ -59,36 +59,17 @@ export function useChat() {
       try {
         const startTime = Date.now();
 
-        // RapidAPI configuration
-        const rapidApiKey =
-          "6205d2f407msh45a5e77f3e8b26bp1499e5jsndd78c4e48ad1";
-        const rapidApiHost =
-          "cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com";
+        // Infinite GPT RapidAPI configuration
+        const rapidApiKey = "6205d2f407msh45a5e77f3e8b26bp1499e5jsndd78c4e48ad1";
+        const rapidApiHost = "infinite-gpt.p.rapidapi.com";
 
-        console.log("Using RapidAPI for chat completion...");
+        console.log("Using Infinite GPT RapidAPI for chat completion...");
 
-        // Prepare messages for API
-        const apiMessages = [
-          {
-            role: "system",
-            content:
-              "You are Mikasal's personal assistant. Respond helpfully, clearly, and politely. If someone asks who created you or who you are, reply: 'I am Mikasal's personal assistant, created by Sir Mikasal Marak.'",
-          },
-          ...messages
-            .filter((msg) => msg.sender === "user" || msg.sender === "bot")
-            .map((msg) => ({
-              role: msg.sender === "user" ? "user" : "assistant",
-              content: msg.content,
-            })),
-          { role: "user", content },
-        ];
-
-        // Call OpenRouter API directly
-        console.log("Making direct API call to OpenRouter...");
-        console.log("API Messages:", apiMessages);
-
+        // Prepare query for Infinite GPT API
         const requestBody = {
-          model: "gpt-4o",
+          query: content,
+          sysMsg: "You are Mikasal's personal assistant. Respond helpfully, clearly, and politely. If someone asks who created you or who you are, reply: 'I am Mikasal's personal assistant, created by Sir Mikasal Marak.'"
+        };
           messages: apiMessages,
           max_tokens: 1024,
           temperature: 0.9,
@@ -97,7 +78,7 @@ export function useChat() {
         console.log("Request body:", JSON.stringify(requestBody, null, 2));
 
         const response = await fetch(
-          "https://cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com/v1/chat/completions",
+          "https://infinite-gpt.p.rapidapi.com/infinite-gpt",
           {
             method: "POST",
             headers: {
@@ -122,13 +103,9 @@ export function useChat() {
 
           // Check for quota exceeded error
           if (responseText.includes("exceeded the MONTHLY quota")) {
-            throw new Error(
-              "RapidAPI monthly quota exceeded. Please upgrade your plan or try again next month.",
-            );
+            throw new Error("RapidAPI monthly quota exceeded. Please upgrade your plan or try again next month.");
           } else if (response.status === 401) {
-            throw new Error(
-              "RapidAPI authentication failed. Please check the API key.",
-            );
+            throw new Error("RapidAPI authentication failed. Please check the API key.");
           } else if (response.status === 403) {
             throw new Error(
               "RapidAPI access forbidden. Please check your subscription.",
@@ -146,7 +123,7 @@ export function useChat() {
 
         const data = JSON.parse(responseText);
         const botResponse =
-          data.choices?.[0]?.message?.content ||
+          data.msg || data.response || data.answer ||
           "I apologize, but I couldn't generate a response. Please try again.";
         const processingTime = Date.now() - startTime;
 
@@ -156,7 +133,7 @@ export function useChat() {
           type: "text",
           sender: "bot",
           metadata: {
-            model: "GPT-4o",
+            model: "Infinite GPT",
             processingTime,
             tokens: data.usage?.total_tokens || 0,
           },
@@ -168,18 +145,11 @@ export function useChat() {
           "I'm sorry, I encountered an error while processing your request.";
         let toastMessage = "Failed to connect to AI service.";
 
-        if (
-          error instanceof Error &&
-          error.message.includes("quota exceeded")
-        ) {
+        if (error instanceof Error && error.message.includes("quota exceeded")) {
           errorMessage =
             "I'm sorry, but the API usage limit has been reached for this month. Please try again later or contact support.";
-          toastMessage =
-            "Monthly API quota exceeded. Service temporarily unavailable.";
-        } else if (
-          error instanceof TypeError &&
-          error.message.includes("fetch")
-        ) {
+          toastMessage = "Monthly API quota exceeded. Service temporarily unavailable.";
+        } else if (error instanceof TypeError && error.message.includes("fetch")) {
           errorMessage =
             "I'm having trouble connecting to the AI service. Please check your internet connection.";
           toastMessage = "Network error - failed to connect to RapidAPI.";
@@ -230,13 +200,11 @@ export function useChat() {
       setIsTyping(true);
 
       try {
-        const rapidApiKey =
-          "6205d2f407msh45a5e77f3e8b26bp1499e5jsndd78c4e48ad1";
-        const rapidApiHost =
-          "cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com";
+        const rapidApiKey = "6205d2f407msh45a5e77f3e8b26bp1499e5jsndd78c4e48ad1";
+        const rapidApiHost = "infinite-gpt.p.rapidapi.com";
 
         const response = await fetch(
-          "https://cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com/v1/chat/completions",
+          "https://infinite-gpt.p.rapidapi.com/infinite-gpt",
           {
             method: "POST",
             headers: {
@@ -245,21 +213,8 @@ export function useChat() {
               "x-rapidapi-host": rapidApiHost,
             },
             body: JSON.stringify({
-              model: "gpt-4o",
-              messages: [
-                {
-                  role: "system",
-                  content:
-                    "You are Mikasal's helpful personal AI assistant that can analyze images.",
-                },
-                {
-                  role: "user",
-                  content:
-                    "I've uploaded an image. Can you help me analyze or discuss it?",
-                },
-              ],
-              max_tokens: 1024,
-              temperature: 0.9,
+              query: "I've uploaded an image. Can you help me analyze or discuss it?",
+              sysMsg: "You are Mikasal's helpful personal AI assistant that can analyze images."
             }),
           },
         );
@@ -268,16 +223,14 @@ export function useChat() {
 
         if (!response.ok) {
           if (responseText.includes("exceeded the MONTHLY quota")) {
-            throw new Error(
-              "RapidAPI monthly quota exceeded for image analysis.",
-            );
+            throw new Error("RapidAPI monthly quota exceeded for image analysis.");
           }
           throw new Error(`API error: ${response.status} - ${responseText}`);
         }
 
         const data = JSON.parse(responseText);
         const botResponse =
-          data.choices?.[0]?.message?.content ||
+          data.msg || data.response || data.answer ||
           "I can see you've uploaded an image. What would you like to know about it?";
 
         addMessage({
@@ -285,7 +238,7 @@ export function useChat() {
           type: "text",
           sender: "bot",
           metadata: {
-            model: "GPT-4o",
+            model: "Infinite GPT",
             processingTime: 1000,
             tokens: data.usage?.total_tokens || 0,
           },
@@ -354,15 +307,10 @@ export function useChat() {
 
         // Try to get a more natural voice
         const voices = speechSynthesis.getVoices();
-        const preferredVoice =
-          voices.find(
-            (voice) =>
-              voice.lang.includes("en") &&
-              (voice.name.includes("Google") ||
-                voice.name.includes("Microsoft")),
-          ) ||
-          voices.find((voice) => voice.lang.includes("en")) ||
-          voices[0];
+        const preferredVoice = voices.find(voice =>
+          voice.lang.includes('en') &&
+          (voice.name.includes('Google') || voice.name.includes('Microsoft'))
+        ) || voices.find(voice => voice.lang.includes('en')) || voices[0];
 
         if (preferredVoice) {
           utterance.voice = preferredVoice;
@@ -399,7 +347,7 @@ export function useChat() {
         sender: "bot",
         timestamp: new Date(),
         metadata: {
-          model: "GPT-4o",
+          model: "Infinite GPT",
           processingTime: 0,
           tokens: 0,
         },
