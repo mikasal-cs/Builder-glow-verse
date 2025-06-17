@@ -86,8 +86,9 @@ export function useChat() {
         ];
 
         const requestBody = {
-          model: "google/gemini-2.0-flash-exp:free",
+          model: "google/gemini-flash-1.5",
           messages: apiMessages,
+          temperature: 0.7,
         };
 
         console.log("Request body:", JSON.stringify(requestBody, null, 2));
@@ -242,7 +243,7 @@ export function useChat() {
               "X-Title": "Mikasal's AI Assistant",
             },
             body: JSON.stringify({
-              model: "google/gemini-2.0-flash-exp:free",
+              model: "google/gemini-flash-1.5",
               messages: [
                 {
                   role: "system",
@@ -255,6 +256,7 @@ export function useChat() {
                     "I've uploaded an image. Can you help me analyze or discuss it?",
                 },
               ],
+              temperature: 0.7,
             }),
           },
         );
