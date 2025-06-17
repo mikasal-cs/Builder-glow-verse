@@ -112,14 +112,20 @@ export function useChat() {
         console.log("API Response status:", response.status);
         console.log("API Response headers:", response.headers);
 
+        const responseText = await response.text();
+
         if (!response.ok) {
-          const errorText = await response.text();
           console.error("RapidAPI Error Details:");
           console.error("Status:", response.status);
           console.error("Status Text:", response.statusText);
-          console.error("Response:", errorText);
+          console.error("Response:", responseText);
 
-          if (response.status === 401) {
+          // Check for quota exceeded error
+          if (responseText.includes("exceeded the MONTHLY quota")) {
+            throw new Error(
+              "RapidAPI monthly quota exceeded. Please upgrade your plan or try again next month.",
+            );
+          } else if (response.status === 401) {
             throw new Error(
               "RapidAPI authentication failed. Please check the API key.",
             );
@@ -133,12 +139,12 @@ export function useChat() {
             );
           } else {
             throw new Error(
-              `RapidAPI error: ${response.status} - ${response.statusText}: ${errorText}`,
+              `RapidAPI error: ${response.status} - ${response.statusText}: ${responseText}`,
             );
           }
         }
 
-        const data = await response.json();
+        const data = JSON.parse(responseText);
         const botResponse =
           data.choices?.[0]?.message?.content ||
           "I apologize, but I couldn't generate a response. Please try again.";
