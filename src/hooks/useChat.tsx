@@ -168,7 +168,18 @@ export function useChat() {
           "I'm sorry, I encountered an error while processing your request.";
         let toastMessage = "Failed to connect to AI service.";
 
-        if (error instanceof TypeError && error.message.includes("fetch")) {
+        if (
+          error instanceof Error &&
+          error.message.includes("quota exceeded")
+        ) {
+          errorMessage =
+            "I'm sorry, but the API usage limit has been reached for this month. Please try again later or contact support.";
+          toastMessage =
+            "Monthly API quota exceeded. Service temporarily unavailable.";
+        } else if (
+          error instanceof TypeError &&
+          error.message.includes("fetch")
+        ) {
           errorMessage =
             "I'm having trouble connecting to the AI service. Please check your internet connection.";
           toastMessage = "Network error - failed to connect to RapidAPI.";
