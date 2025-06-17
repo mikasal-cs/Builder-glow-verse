@@ -75,7 +75,7 @@ export function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) {
           <div className="hidden lg:flex items-center space-x-4 text-sm text-muted-foreground mr-4">
             <div className="flex items-center space-x-1">
               <MessageCircle className="w-4 h-4" />
-              <span>Infinite GPT</span>
+              <span>Gemini 2.0</span>
             </div>
           </div>
 

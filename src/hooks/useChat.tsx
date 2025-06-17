@@ -12,7 +12,7 @@ export function useChat() {
       sender: "bot",
       timestamp: new Date(),
       metadata: {
-        model: "Infinite GPT",
+        model: "Gemini 2.0 Flash",
         processingTime: 0,
         tokens: 0,
       },
@@ -59,30 +59,44 @@ export function useChat() {
       try {
         const startTime = Date.now();
 
-        // Infinite GPT RapidAPI configuration
-        const rapidApiKey =
-          "6205d2f407msh45a5e77f3e8b26bp1499e5jsndd78c4e48ad1";
-        const rapidApiHost = "infinite-gpt.p.rapidapi.com";
+        // OpenRouter API configuration
+        const openRouterApiKey =
+          "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";
 
-        console.log("Using Infinite GPT RapidAPI for chat completion...");
+        console.log("Using OpenRouter for chat completion...");
 
-        // Prepare query for Infinite GPT API
+        // Prepare messages for OpenRouter API
+        const apiMessages = [
+          {
+            role: "system",
+            content:
+              "You are Mikasal's personal assistant. Respond helpfully, clearly, and politely. If someone asks who created you or who you are, reply: 'I am Mikasal's personal assistant, created by Sir Mikasal Marak.'",
+          },
+          ...messages
+            .filter((msg) => msg.sender === "user" || msg.sender === "bot")
+            .map((msg) => ({
+              role: msg.sender === "user" ? "user" : "assistant",
+              content: msg.content,
+            })),
+          { role: "user", content },
+        ];
+
         const requestBody = {
-          query: content,
-          sysMsg:
-            "You are Mikasal's personal assistant. Respond helpfully, clearly, and politely. If someone asks who created you or who you are, reply: 'I am Mikasal's personal assistant, created by Sir Mikasal Marak.'",
+          model: "google/gemini-2.0-flash-exp:free",
+          messages: apiMessages,
         };
 
         console.log("Request body:", JSON.stringify(requestBody, null, 2));
 
         const response = await fetch(
-          "https://infinite-gpt.p.rapidapi.com/infinite-gpt",
+          "https://openrouter.ai/api/v1/chat/completions",
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "x-rapidapi-key": rapidApiKey,
-              "x-rapidapi-host": rapidApiHost,
+              Authorization: `Bearer ${openRouterApiKey}`,
+              "HTTP-Referer": "https://mikasalpersonalassistant.netlify.app",
+              "X-Title": "Mikasal's AI Assistant",
             },
             body: JSON.stringify(requestBody),
           },
@@ -94,40 +108,33 @@ export function useChat() {
         const responseText = await response.text();
 
         if (!response.ok) {
-          console.error("RapidAPI Error Details:");
+          console.error("OpenRouter Error Details:");
           console.error("Status:", response.status);
           console.error("Status Text:", response.statusText);
           console.error("Response:", responseText);
 
-          // Check for quota exceeded error
-          if (responseText.includes("exceeded the MONTHLY quota")) {
+          if (response.status === 401) {
             throw new Error(
-              "RapidAPI monthly quota exceeded. Please upgrade your plan or try again next month.",
-            );
-          } else if (response.status === 401) {
-            throw new Error(
-              "RapidAPI authentication failed. Please check the API key.",
+              "OpenRouter authentication failed. Please check the API key.",
             );
           } else if (response.status === 403) {
             throw new Error(
-              "RapidAPI access forbidden. Please check your subscription.",
+              "OpenRouter access forbidden. Please check your subscription.",
             );
           } else if (response.status === 429) {
             throw new Error(
-              "RapidAPI rate limit exceeded. Please try again later.",
+              "OpenRouter rate limit exceeded. Please try again later.",
             );
           } else {
             throw new Error(
-              `RapidAPI error: ${response.status} - ${response.statusText}: ${responseText}`,
+              `OpenRouter error: ${response.status} - ${response.statusText}: ${responseText}`,
             );
           }
         }
 
         const data = JSON.parse(responseText);
         const botResponse =
-          data.msg ||
-          data.response ||
-          data.answer ||
+          data.choices?.[0]?.message?.content ||
           "I apologize, but I couldn't generate a response. Please try again.";
         const processingTime = Date.now() - startTime;
 
@@ -137,7 +144,7 @@ export function useChat() {
           type: "text",
           sender: "bot",
           metadata: {
-            model: "Infinite GPT",
+            model: "Gemini 2.0 Flash",
             processingTime,
             tokens: data.usage?.total_tokens || 0,
           },
@@ -149,33 +156,22 @@ export function useChat() {
           "I'm sorry, I encountered an error while processing your request.";
         let toastMessage = "Failed to connect to AI service.";
 
-        if (
-          error instanceof Error &&
-          error.message.includes("quota exceeded")
-        ) {
-          errorMessage =
-            "I'm sorry, but the API usage limit has been reached for this month. Please try again later or contact support.";
-          toastMessage =
-            "Monthly API quota exceeded. Service temporarily unavailable.";
-        } else if (
-          error instanceof TypeError &&
-          error.message.includes("fetch")
-        ) {
+        if (error instanceof TypeError && error.message.includes("fetch")) {
           errorMessage =
             "I'm having trouble connecting to the AI service. Please check your internet connection.";
-          toastMessage = "Network error - failed to connect to RapidAPI.";
+          toastMessage = "Network error - failed to connect to OpenRouter.";
         } else if (error instanceof Error && error.message.includes("401")) {
           errorMessage =
-            "Authentication failed. Please check the RapidAPI configuration.";
-          toastMessage = "RapidAPI authentication error.";
+            "Authentication failed. Please check the OpenRouter API configuration.";
+          toastMessage = "OpenRouter authentication error.";
         } else if (error instanceof Error && error.message.includes("429")) {
           errorMessage =
             "I'm currently experiencing high demand. Please try again in a moment.";
-          toastMessage = "RapidAPI rate limit exceeded. Please wait.";
+          toastMessage = "OpenRouter rate limit exceeded. Please wait.";
         }
 
         toast({
-          title: "RapidAPI Connection Error",
+          title: "OpenRouter Connection Error",
           description: toastMessage,
           variant: "destructive",
         });
@@ -211,24 +207,33 @@ export function useChat() {
       setIsTyping(true);
 
       try {
-        const rapidApiKey =
-          "6205d2f407msh45a5e77f3e8b26bp1499e5jsndd78c4e48ad1";
-        const rapidApiHost = "infinite-gpt.p.rapidapi.com";
+        const openRouterApiKey =
+          "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";
 
         const response = await fetch(
-          "https://infinite-gpt.p.rapidapi.com/infinite-gpt",
+          "https://openrouter.ai/api/v1/chat/completions",
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "x-rapidapi-key": rapidApiKey,
-              "x-rapidapi-host": rapidApiHost,
+              Authorization: `Bearer ${openRouterApiKey}`,
+              "HTTP-Referer": "https://mikasalpersonalassistant.netlify.app",
+              "X-Title": "Mikasal's AI Assistant",
             },
             body: JSON.stringify({
-              query:
-                "I've uploaded an image. Can you help me analyze or discuss it?",
-              sysMsg:
-                "You are Mikasal's helpful personal AI assistant that can analyze images.",
+              model: "google/gemini-2.0-flash-exp:free",
+              messages: [
+                {
+                  role: "system",
+                  content:
+                    "You are Mikasal's helpful personal AI assistant that can analyze images.",
+                },
+                {
+                  role: "user",
+                  content:
+                    "I've uploaded an image. Can you help me analyze or discuss it?",
+                },
+              ],
             }),
           },
         );
@@ -236,19 +241,14 @@ export function useChat() {
         const responseText = await response.text();
 
         if (!response.ok) {
-          if (responseText.includes("exceeded the MONTHLY quota")) {
-            throw new Error(
-              "RapidAPI monthly quota exceeded for image analysis.",
-            );
-          }
-          throw new Error(`API error: ${response.status} - ${responseText}`);
+          throw new Error(
+            `OpenRouter API error: ${response.status} - ${responseText}`,
+          );
         }
 
         const data = JSON.parse(responseText);
         const botResponse =
-          data.msg ||
-          data.response ||
-          data.answer ||
+          data.choices?.[0]?.message?.content ||
           "I can see you've uploaded an image. What would you like to know about it?";
 
         addMessage({
@@ -256,7 +256,7 @@ export function useChat() {
           type: "text",
           sender: "bot",
           metadata: {
-            model: "Infinite GPT",
+            model: "Gemini 2.0 Flash",
             processingTime: 1000,
             tokens: data.usage?.total_tokens || 0,
           },
@@ -370,7 +370,7 @@ export function useChat() {
         sender: "bot",
         timestamp: new Date(),
         metadata: {
-          model: "Infinite GPT",
+          model: "Gemini 2.0 Flash",
           processingTime: 0,
           tokens: 0,
         },
