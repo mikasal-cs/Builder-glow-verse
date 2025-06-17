@@ -60,7 +60,8 @@ export function useChat() {
         const startTime = Date.now();
 
         // Infinite GPT RapidAPI configuration
-        const rapidApiKey = "6205d2f407msh45a5e77f3e8b26bp1499e5jsndd78c4e48ad1";
+        const rapidApiKey =
+          "6205d2f407msh45a5e77f3e8b26bp1499e5jsndd78c4e48ad1";
         const rapidApiHost = "infinite-gpt.p.rapidapi.com";
 
         console.log("Using Infinite GPT RapidAPI for chat completion...");
@@ -68,11 +69,8 @@ export function useChat() {
         // Prepare query for Infinite GPT API
         const requestBody = {
           query: content,
-          sysMsg: "You are Mikasal's personal assistant. Respond helpfully, clearly, and politely. If someone asks who created you or who you are, reply: 'I am Mikasal's personal assistant, created by Sir Mikasal Marak.'"
-        };
-          messages: apiMessages,
-          max_tokens: 1024,
-          temperature: 0.9,
+          sysMsg:
+            "You are Mikasal's personal assistant. Respond helpfully, clearly, and politely. If someone asks who created you or who you are, reply: 'I am Mikasal's personal assistant, created by Sir Mikasal Marak.'",
         };
 
         console.log("Request body:", JSON.stringify(requestBody, null, 2));
@@ -103,9 +101,13 @@ export function useChat() {
 
           // Check for quota exceeded error
           if (responseText.includes("exceeded the MONTHLY quota")) {
-            throw new Error("RapidAPI monthly quota exceeded. Please upgrade your plan or try again next month.");
+            throw new Error(
+              "RapidAPI monthly quota exceeded. Please upgrade your plan or try again next month.",
+            );
           } else if (response.status === 401) {
-            throw new Error("RapidAPI authentication failed. Please check the API key.");
+            throw new Error(
+              "RapidAPI authentication failed. Please check the API key.",
+            );
           } else if (response.status === 403) {
             throw new Error(
               "RapidAPI access forbidden. Please check your subscription.",
@@ -123,7 +125,9 @@ export function useChat() {
 
         const data = JSON.parse(responseText);
         const botResponse =
-          data.msg || data.response || data.answer ||
+          data.msg ||
+          data.response ||
+          data.answer ||
           "I apologize, but I couldn't generate a response. Please try again.";
         const processingTime = Date.now() - startTime;
 
@@ -145,11 +149,18 @@ export function useChat() {
           "I'm sorry, I encountered an error while processing your request.";
         let toastMessage = "Failed to connect to AI service.";
 
-        if (error instanceof Error && error.message.includes("quota exceeded")) {
+        if (
+          error instanceof Error &&
+          error.message.includes("quota exceeded")
+        ) {
           errorMessage =
             "I'm sorry, but the API usage limit has been reached for this month. Please try again later or contact support.";
-          toastMessage = "Monthly API quota exceeded. Service temporarily unavailable.";
-        } else if (error instanceof TypeError && error.message.includes("fetch")) {
+          toastMessage =
+            "Monthly API quota exceeded. Service temporarily unavailable.";
+        } else if (
+          error instanceof TypeError &&
+          error.message.includes("fetch")
+        ) {
           errorMessage =
             "I'm having trouble connecting to the AI service. Please check your internet connection.";
           toastMessage = "Network error - failed to connect to RapidAPI.";
@@ -200,7 +211,8 @@ export function useChat() {
       setIsTyping(true);
 
       try {
-        const rapidApiKey = "6205d2f407msh45a5e77f3e8b26bp1499e5jsndd78c4e48ad1";
+        const rapidApiKey =
+          "6205d2f407msh45a5e77f3e8b26bp1499e5jsndd78c4e48ad1";
         const rapidApiHost = "infinite-gpt.p.rapidapi.com";
 
         const response = await fetch(
@@ -213,8 +225,10 @@ export function useChat() {
               "x-rapidapi-host": rapidApiHost,
             },
             body: JSON.stringify({
-              query: "I've uploaded an image. Can you help me analyze or discuss it?",
-              sysMsg: "You are Mikasal's helpful personal AI assistant that can analyze images."
+              query:
+                "I've uploaded an image. Can you help me analyze or discuss it?",
+              sysMsg:
+                "You are Mikasal's helpful personal AI assistant that can analyze images.",
             }),
           },
         );
@@ -223,14 +237,18 @@ export function useChat() {
 
         if (!response.ok) {
           if (responseText.includes("exceeded the MONTHLY quota")) {
-            throw new Error("RapidAPI monthly quota exceeded for image analysis.");
+            throw new Error(
+              "RapidAPI monthly quota exceeded for image analysis.",
+            );
           }
           throw new Error(`API error: ${response.status} - ${responseText}`);
         }
 
         const data = JSON.parse(responseText);
         const botResponse =
-          data.msg || data.response || data.answer ||
+          data.msg ||
+          data.response ||
+          data.answer ||
           "I can see you've uploaded an image. What would you like to know about it?";
 
         addMessage({
@@ -307,10 +325,15 @@ export function useChat() {
 
         // Try to get a more natural voice
         const voices = speechSynthesis.getVoices();
-        const preferredVoice = voices.find(voice =>
-          voice.lang.includes('en') &&
-          (voice.name.includes('Google') || voice.name.includes('Microsoft'))
-        ) || voices.find(voice => voice.lang.includes('en')) || voices[0];
+        const preferredVoice =
+          voices.find(
+            (voice) =>
+              voice.lang.includes("en") &&
+              (voice.name.includes("Google") ||
+                voice.name.includes("Microsoft")),
+          ) ||
+          voices.find((voice) => voice.lang.includes("en")) ||
+          voices[0];
 
         if (preferredVoice) {
           utterance.voice = preferredVoice;
