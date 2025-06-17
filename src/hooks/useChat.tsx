@@ -264,11 +264,18 @@ export function useChat() {
           },
         );
 
+        const responseText = await response.text();
+
         if (!response.ok) {
-          throw new Error(`API error: ${response.status}`);
+          if (responseText.includes("exceeded the MONTHLY quota")) {
+            throw new Error(
+              "RapidAPI monthly quota exceeded for image analysis.",
+            );
+          }
+          throw new Error(`API error: ${response.status} - ${responseText}`);
         }
 
-        const data = await response.json();
+        const data = JSON.parse(responseText);
         const botResponse =
           data.choices?.[0]?.message?.content ||
           "I can see you've uploaded an image. What would you like to know about it?";
