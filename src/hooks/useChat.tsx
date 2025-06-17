@@ -64,6 +64,10 @@ export function useChat() {
           "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";
 
         console.log("Using OpenRouter for chat completion...");
+        console.log(
+          "API Key format:",
+          openRouterApiKey.substring(0, 20) + "...",
+        );
 
         // Prepare messages for OpenRouter API
         const apiMessages = [
@@ -87,6 +91,7 @@ export function useChat() {
         };
 
         console.log("Request body:", JSON.stringify(requestBody, null, 2));
+        console.log("Making request to OpenRouter...");
 
         const response = await fetch(
           "https://openrouter.ai/api/v1/chat/completions",
@@ -103,9 +108,12 @@ export function useChat() {
         );
 
         console.log("API Response status:", response.status);
-        console.log("API Response headers:", response.headers);
+        console.log("API Response ok:", response.ok);
+        console.log("API Response statusText:", response.statusText);
 
         const responseText = await response.text();
+        console.log("Response text length:", responseText.length);
+        console.log("Response text preview:", responseText.substring(0, 200));
 
         if (!response.ok) {
           console.error("OpenRouter Error Details:");
@@ -132,7 +140,16 @@ export function useChat() {
           }
         }
 
-        const data = JSON.parse(responseText);
+        let data;
+        try {
+          data = JSON.parse(responseText);
+          console.log("Parsed response data:", data);
+        } catch (parseError) {
+          console.error("JSON parse error:", parseError);
+          console.error("Raw response:", responseText);
+          throw new Error("Invalid JSON response from API");
+        }
+
         const botResponse =
           data.choices?.[0]?.message?.content ||
           "I apologize, but I couldn't generate a response. Please try again.";
@@ -151,6 +168,10 @@ export function useChat() {
         });
       } catch (error) {
         console.error("API Error:", error);
+        console.error("Error details:", {
+          message: error instanceof Error ? error.message : "Unknown error",
+          stack: error instanceof Error ? error.stack : "No stack trace",
+        });
 
         let errorMessage =
           "I'm sorry, I encountered an error while processing your request.";
