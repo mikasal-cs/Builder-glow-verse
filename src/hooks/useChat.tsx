@@ -109,17 +109,12 @@ export function useChat() {
 
         console.log("API Response status:", response.status);
         console.log("API Response ok:", response.ok);
-        console.log("API Response statusText:", response.statusText);
-
-        const responseText = await response.text();
-        console.log("Response text length:", responseText.length);
-        console.log("Response text preview:", responseText.substring(0, 200));
 
         if (!response.ok) {
+          const errorText = await response.text();
           console.error("OpenRouter Error Details:");
           console.error("Status:", response.status);
-          console.error("Status Text:", response.statusText);
-          console.error("Response:", responseText);
+          console.error("Response:", errorText);
 
           if (response.status === 401) {
             throw new Error(
@@ -135,20 +130,13 @@ export function useChat() {
             );
           } else {
             throw new Error(
-              `OpenRouter error: ${response.status} - ${response.statusText}: ${responseText}`,
+              `OpenRouter error: ${response.status} - ${errorText}`,
             );
           }
         }
 
-        let data;
-        try {
-          data = JSON.parse(responseText);
-          console.log("Parsed response data:", data);
-        } catch (parseError) {
-          console.error("JSON parse error:", parseError);
-          console.error("Raw response:", responseText);
-          throw new Error("Invalid JSON response from API");
-        }
+        const data = await response.json();
+        console.log("Parsed response data:", data);
 
         const botResponse =
           data.choices?.[0]?.message?.content ||
