@@ -100,8 +100,8 @@ export function useChat() {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${openRouterApiKey}`,
-              "HTTP-Referer": "https://mikasalpersonalassistant.netlify.app",
-              "X-Title": "Mikasal's AI Assistant",
+              "HTTP-Referer": "http://localhost",
+              "X-Title": "llama3-chatbot",
             },
             body: JSON.stringify(requestBody),
           },
