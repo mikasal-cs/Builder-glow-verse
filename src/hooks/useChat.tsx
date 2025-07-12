@@ -59,11 +59,11 @@ export function useChat() {
       try {
         const startTime = Date.now();
 
-        // OpenRouter API configuration
+        // LLaMA 3 OpenRouter API configuration
         const openRouterApiKey =
-          "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";
+          "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";
 
-        console.log("Using OpenRouter for chat completion...");
+        console.log("Using LLaMA 3 via OpenRouter for chat completion...");
         console.log(
           "API Key format:",
           openRouterApiKey.substring(0, 20) + "...",
@@ -86,9 +86,8 @@ export function useChat() {
         ];
 
         const requestBody = {
-          model: "google/gemini-flash-1.5",
+          model: "meta-llama/llama-3-70b-instruct",
           messages: apiMessages,
-          temperature: 0.7,
         };
 
         console.log("Request body:", JSON.stringify(requestBody, null, 2));
@@ -162,7 +161,7 @@ export function useChat() {
           type: "text",
           sender: "bot",
           metadata: {
-            model: "Gemini 2.0 Flash",
+            model: "LLaMA 3 70B",
             processingTime,
             tokens: data.usage?.total_tokens || 0,
           },
@@ -230,7 +229,7 @@ export function useChat() {
 
       try {
         const openRouterApiKey =
-          "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";
+          "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";
 
         const response = await fetch(
           "https://openrouter.ai/api/v1/chat/completions",
@@ -239,11 +238,11 @@ export function useChat() {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${openRouterApiKey}`,
-              "HTTP-Referer": "https://mikasalpersonalassistant.netlify.app",
-              "X-Title": "Mikasal's AI Assistant",
+              "HTTP-Referer": "http://localhost",
+              "X-Title": "llama3-chatbot",
             },
             body: JSON.stringify({
-              model: "google/gemini-flash-1.5",
+              model: "meta-llama/llama-3-70b-instruct",
               messages: [
                 {
                   role: "system",
@@ -256,7 +255,6 @@ export function useChat() {
                     "I've uploaded an image. Can you help me analyze or discuss it?",
                 },
               ],
-              temperature: 0.7,
             }),
           },
         );
@@ -279,7 +277,7 @@ export function useChat() {
           type: "text",
           sender: "bot",
           metadata: {
-            model: "Gemini 2.0 Flash",
+            model: "LLaMA 3 70B",
             processingTime: 1000,
             tokens: data.usage?.total_tokens || 0,
           },
