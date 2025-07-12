@@ -247,15 +247,14 @@ export function useChat() {
           },
         );
 
-        const responseText = await response.text();
-
         if (!response.ok) {
+          const errorText = await response.text();
           throw new Error(
-            `OpenRouter API error: ${response.status} - ${responseText}`,
+            `OpenRouter API error: ${response.status} - ${errorText}`,
           );
         }
 
-        const data = JSON.parse(responseText);
+        const data = await response.json();
         const botResponse =
           data.choices?.[0]?.message?.content ||
           "I can see you've uploaded an image. What would you like to know about it?";
