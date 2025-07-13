@@ -59,23 +59,10 @@ export function useChat() {
       try {
         const startTime = Date.now();
 
-        // LLaMA 3 OpenRouter API configuration
-        const openRouterApiKey =
-          "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";
+        console.log("Using secure Netlify function for chat completion...");
 
-        console.log("Using LLaMA 3 via OpenRouter for chat completion...");
-        console.log(
-          "API Key format:",
-          openRouterApiKey.substring(0, 20) + "...",
-        );
-
-        // Prepare messages for OpenRouter API
+        // Prepare messages for the API
         const apiMessages = [
-          {
-            role: "system",
-            content:
-              "You are Mikasal's personal assistant. Respond helpfully, clearly, and politely. If someone asks who created you or who you are, reply: 'I am Mikasal's personal assistant, created by Sir Mikasal Marak.'",
-          },
           ...messages
             .filter((msg) => msg.sender === "user" || msg.sender === "bot")
             .map((msg) => ({
@@ -86,26 +73,19 @@ export function useChat() {
         ];
 
         const requestBody = {
-          model: "meta-llama/llama-3-70b-instruct",
           messages: apiMessages,
+          temperature: 0.7,
         };
 
-        console.log("Request body:", JSON.stringify(requestBody, null, 2));
-        console.log("Making request to OpenRouter...");
+        console.log("Making request to Netlify function...");
 
-        const response = await fetch(
-          "https://openrouter.ai/api/v1/chat/completions",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${openRouterApiKey}`,
-              "HTTP-Referer": "http://localhost",
-              "X-Title": "llama3-chatbot",
-            },
-            body: JSON.stringify(requestBody),
+        const response = await fetch("/.netlify/functions/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        );
+          body: JSON.stringify(requestBody),
+        });
 
         console.log("API Response status:", response.status);
         console.log("API Response ok:", response.ok);
