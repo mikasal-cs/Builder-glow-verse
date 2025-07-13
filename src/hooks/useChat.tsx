@@ -12,7 +12,7 @@ export function useChat() {
       sender: "bot",
       timestamp: new Date(),
       metadata: {
-        model: "LLaMA 3 70B",
+        model: "LLaMA 3 8B",
         processingTime: 0,
         tokens: 0,
       },
@@ -353,7 +353,7 @@ export function useChat() {
         sender: "bot",
         timestamp: new Date(),
         metadata: {
-          model: "LLaMA 3 70B",
+          model: "LLaMA 3 8B",
           processingTime: 0,
           tokens: 0,
         },
