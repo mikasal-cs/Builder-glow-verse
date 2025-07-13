@@ -72,19 +72,24 @@ export function MessageBubble({
       >
         {/* Avatar */}
         <div className="flex-shrink-0">
-          <div
-            className={cn(
-              "w-8 h-8 rounded-full flex items-center justify-center",
-              isUser
-                ? "bg-ai-primary text-white"
-                : "bg-gradient-to-br from-ai-gradient-from to-ai-gradient-to text-white",
-            )}
-          >
-            {isUser ? (
-              <User className="w-4 h-4" />
-            ) : (
-              <Bot className="w-4 h-4" />
-            )}
+          <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-white/20">
+            <img
+              src={
+                isUser
+                  ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_uicmvTEqHwufK15N9TVbnhgSaAwa0x0_xf789cguMv1uO3rPGTHBENn-&s=10"
+                  : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrfvGtxnf4yF3fvYX-77kTi-Bo5-0UOezqIvpEUkBE64ja3Kn3NO6q2O0U&s=10"
+              }
+              alt={isUser ? "User" : "AI Assistant"}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                // Fallback to icons if images fail to load
+                const target = e.target as HTMLImageElement;
+                target.style.display = "none";
+                target.parentElement!.innerHTML = isUser
+                  ? '<User class="w-5 h-5 text-white" />'
+                  : '<Bot class="w-5 h-5 text-white" />';
+              }}
+            />
           </div>
         </div>
 
@@ -93,11 +98,9 @@ export function MessageBubble({
           {/* Message bubble */}
           <div
             className={cn(
-              "relative rounded-2xl px-4 py-3 shadow-sm",
+              "relative rounded-2xl px-4 py-3 shadow-sm max-w-[85%]",
               "transition-all duration-200 hover:shadow-md",
-              isUser
-                ? "bg-ai-primary text-white ml-4"
-                : "bg-muted/70 backdrop-blur-sm mr-4",
+              isUser ? "chat-bubble-user ml-4" : "chat-bubble-bot mr-4",
               message.type === "image" || message.type === "generated-image"
                 ? "p-2"
                 : "",
