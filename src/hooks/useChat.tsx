@@ -88,38 +88,27 @@ export function useChat() {
         });
 
         console.log("API Response status:", response.status);
-        console.log("API Response ok:", response.ok);
 
         if (!response.ok) {
-          const errorText = await response.text();
-          console.error("OpenRouter Error Details:");
-          console.error("Status:", response.status);
-          console.error("Response:", errorText);
+          const errorData = await response.json();
+          console.error("Netlify Function Error:", errorData);
 
-          if (response.status === 401) {
+          if (response.status === 429) {
             throw new Error(
-              "OpenRouter authentication failed. Please check the API key.",
+              "Rate limit exceeded. Please try again in a moment.",
             );
-          } else if (response.status === 403) {
-            throw new Error(
-              "OpenRouter access forbidden. Please check your subscription.",
-            );
-          } else if (response.status === 429) {
-            throw new Error(
-              "OpenRouter rate limit exceeded. Please try again later.",
-            );
+          } else if (response.status >= 500) {
+            throw new Error("Server error. Please try again later.");
           } else {
-            throw new Error(
-              `OpenRouter error: ${response.status} - ${errorText}`,
-            );
+            throw new Error(errorData.error || "Failed to get AI response");
           }
         }
 
         const data = await response.json();
-        console.log("Parsed response data:", data);
+        console.log("Response from Netlify function:", data);
 
         const botResponse =
-          data.choices?.[0]?.message?.content ||
+          data.reply ||
           "I apologize, but I couldn't generate a response. Please try again.";
         const processingTime = Date.now() - startTime;
 
@@ -129,7 +118,7 @@ export function useChat() {
           type: "text",
           sender: "bot",
           metadata: {
-            model: "LLaMA 3 70B",
+            model: "LLaMA 3 8B",
             processingTime,
             tokens: data.usage?.total_tokens || 0,
           },
