@@ -168,19 +168,25 @@ export function useChat() {
         if (error instanceof TypeError && error.message.includes("fetch")) {
           errorMessage =
             "I'm having trouble connecting to the AI service. Please check your internet connection.";
-          toastMessage = "Network error - failed to connect to OpenRouter.";
-        } else if (error instanceof Error && error.message.includes("401")) {
-          errorMessage =
-            "Authentication failed. Please check the OpenRouter API configuration.";
-          toastMessage = "OpenRouter authentication error.";
-        } else if (error instanceof Error && error.message.includes("429")) {
+          toastMessage = "Network error - failed to connect to AI service.";
+        } else if (
+          error instanceof Error &&
+          error.message.includes("Rate limit")
+        ) {
           errorMessage =
             "I'm currently experiencing high demand. Please try again in a moment.";
-          toastMessage = "OpenRouter rate limit exceeded. Please wait.";
+          toastMessage = "Rate limit exceeded. Please wait a moment.";
+        } else if (
+          error instanceof Error &&
+          error.message.includes("Server error")
+        ) {
+          errorMessage =
+            "The AI service is temporarily unavailable. Please try again later.";
+          toastMessage = "Server error. Please try again later.";
         }
 
         toast({
-          title: "OpenRouter Connection Error",
+          title: "AI Service Error",
           description: toastMessage,
           variant: "destructive",
         });
